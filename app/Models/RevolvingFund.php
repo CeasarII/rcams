@@ -11,7 +11,7 @@ class RevolvingFund extends Model
         'fund_limit', 'current_balance', 'status_id',
     ];
 
-    protected $casts = ['fund_limit' => 'decimal:2', 'current_balance' => 'decimal:2'];
+    protected $casts = ['custodian_id' => 'integer', 'fund_limit' => 'decimal:2', 'current_balance' => 'decimal:2'];
 
     public function vessel()
     {

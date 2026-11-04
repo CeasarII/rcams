@@ -15,6 +15,7 @@ class QuestionableExpense extends Model
     ];
 
     protected $casts = [
+        'tagged_by' => 'integer',
         'tagged_at' => 'datetime',
         'hard_copy_received_on' => 'date',
         'hard_copy_valid' => 'boolean',

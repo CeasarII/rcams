@@ -14,6 +14,7 @@ class FundRequest extends Model
     ];
 
     protected $casts = [
+        'requestor_id' => 'integer',
         'amount_requested' => 'decimal:2',
         'request_date' => 'date',
         'submitted_at' => 'datetime',

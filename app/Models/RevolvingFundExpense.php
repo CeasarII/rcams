@@ -12,6 +12,7 @@ class RevolvingFundExpense extends Model
     ];
 
     protected $casts = [
+        'prepared_by' => 'integer',
         'expense_date' => 'date',
         'total_amount' => 'decimal:2',
         'submitted_at' => 'datetime',

@@ -16,6 +16,7 @@ class CashAdvanceLiquidation extends Model
     ];
 
     protected $casts = [
+        'prepared_by' => 'integer',
         'date_prepared' => 'date',
         'cash_advance_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',

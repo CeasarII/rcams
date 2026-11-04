@@ -18,6 +18,7 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
+        'id' => 'integer',
         'is_active' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
