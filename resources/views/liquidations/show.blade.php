@@ -130,7 +130,7 @@
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">Tag</button>
                                                 </form>
                                             </details>
-                                        @elseif ($qe && $qe->tagged_by === auth()->id() && $qe->status->code === 'WAITING_HARD_COPY')
+                                        @elseif ($qe && (int) $qe->tagged_by === (int) auth()->id() && $qe->status->code === 'WAITING_HARD_COPY')
                                             <form method="POST" action="{{ route('liquidations.items.untag', [$liquidation, $item]) }}"
                                                   class="mt-1" onsubmit="return confirm('Remove the questionable tag?');">
                                                 @csrf @method('DELETE')

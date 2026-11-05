@@ -103,7 +103,7 @@ class LiquidationItemController extends Controller
     {
         $this->authorize('view', $liquidation);
         $this->assertBelongs($liquidation, $item);
-        abort_unless($attachment->liquidation_item_id === $item->id, 404);
+        abort_unless((int) $attachment->liquidation_item_id === (int) $item->id, 404);
         abort_unless(Storage::disk(self::DISK)->exists($attachment->file_path), 404, 'File not found on storage.');
 
         return Storage::disk(self::DISK)->download($attachment->file_path, $attachment->file_name);
@@ -113,7 +113,7 @@ class LiquidationItemController extends Controller
     {
         $this->authorize('update', $liquidation);
         $this->assertBelongs($liquidation, $item);
-        abort_unless($attachment->liquidation_item_id === $item->id, 404);
+        abort_unless((int) $attachment->liquidation_item_id === (int) $item->id, 404);
 
         Storage::disk(self::DISK)->delete($attachment->file_path);
         $attachment->delete();
@@ -215,7 +215,7 @@ class LiquidationItemController extends Controller
 
     private function assertBelongs(CashAdvanceLiquidation $liquidation, LiquidationItem $item): void
     {
-        abort_unless($item->liquidation_id === $liquidation->id, 404);
+        abort_unless((int) $item->liquidation_id === (int) $liquidation->id, 404);
     }
 
     /** Items under a Questionable Expense belong to its own process and can't be edited or removed. */

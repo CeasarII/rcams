@@ -18,7 +18,7 @@ class RevolvingFundPolicy
 
     public function view(User $user, RevolvingFund $fund): bool
     {
-        return LiquidationAccess::seesAll(LiquidationAccess::roles($user)) || $fund->custodian_id === $user->id;
+        return LiquidationAccess::seesAll(LiquidationAccess::roles($user)) || (int) $fund->custodian_id === (int) $user->id;
     }
 
     /** Setting a fund up (and changing it) is Admin work. */
@@ -35,6 +35,6 @@ class RevolvingFundPolicy
     /** Start/end a voyage and prepare its expenses: the fund's custodian only, while it is active. */
     public function manageVoyage(User $user, RevolvingFund $fund): bool
     {
-        return $fund->custodian_id === $user->id && $fund->isActive();
+        return (int) $fund->custodian_id === (int) $user->id && $fund->isActive();
     }
 }

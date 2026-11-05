@@ -82,7 +82,7 @@ class AttachmentController extends Controller
     {
         abort_unless(
             $attachment->attachable_type === $fundRequest->getMorphClass()
-                && (int) $attachment->attachable_id === $fundRequest->id,
+                && (int) $attachment->attachable_id === (int) $fundRequest->id,
             404
         );
     }

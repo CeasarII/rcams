@@ -146,7 +146,7 @@ class RevolvingFundExpenseWorkflowController extends Controller
     public function tag(Request $request, RevolvingFundExpense $revolvingFundExpense, RevolvingFundExpenseItem $item)
     {
         $this->authorize('tagQuestionable', $revolvingFundExpense);
-        abort_unless($item->expense_id === $revolvingFundExpense->id, 404);
+        abort_unless((int) $item->expense_id === (int) $revolvingFundExpense->id, 404);
 
         $data = $request->validate(['reason' => ['required', 'string', 'max:1000']]);
 
@@ -158,7 +158,7 @@ class RevolvingFundExpenseWorkflowController extends Controller
     public function untag(RevolvingFundExpense $revolvingFundExpense, RevolvingFundExpenseItem $item)
     {
         $this->authorize('tagQuestionable', $revolvingFundExpense);
-        abort_unless($item->expense_id === $revolvingFundExpense->id, 404);
+        abort_unless((int) $item->expense_id === (int) $revolvingFundExpense->id, 404);
 
         $this->workflow->untagQuestionable($item, Auth::user());
 

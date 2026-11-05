@@ -13,7 +13,7 @@ class FundRequestPolicy
     {
         if ($user->hasRole('REQUESTOR') && ! $user->hasRole('OE') && ! $user->hasRole('ACCT_STAFF')
             && ! $user->hasRole('ACCT_HEAD') && ! $user->hasRole('TREASURY')) {
-            return $fundRequest->requestor_id === $user->id;
+            return (int) $fundRequest->requestor_id === (int) $user->id;
         }
 
         return true;
@@ -32,7 +32,7 @@ class FundRequestPolicy
      */
     public function update(User $user, FundRequest $fundRequest): bool
     {
-        return $fundRequest->requestor_id === $user->id
+        return (int) $fundRequest->requestor_id === (int) $user->id
             && in_array($fundRequest->requestStatus->code, [
                 RequestStatus::DRAFT,
                 RequestStatus::RETURNED_TO_REQUESTOR,
@@ -42,7 +42,7 @@ class FundRequestPolicy
     public function validateAsOe(User $user, FundRequest $fundRequest): bool
     {
         return $user->hasRole('OE')
-            && $fundRequest->requestor_id !== $user->id // segregation of duties, Phase 1 Problem P6
+            && (int) $fundRequest->requestor_id !== (int) $user->id // segregation of duties, Phase 1 Problem P6
             && $this->oeIsInScope($user, $fundRequest)
             && in_array($fundRequest->requestStatus->code, [
                 RequestStatus::FOR_OE_VALIDATION,
@@ -53,7 +53,7 @@ class FundRequestPolicy
     public function validateAsStaff(User $user, FundRequest $fundRequest): bool
     {
         return $user->hasRole('ACCT_STAFF')
-            && $fundRequest->requestor_id !== $user->id
+            && (int) $fundRequest->requestor_id !== (int) $user->id
             && in_array($fundRequest->requestStatus->code, [
                 RequestStatus::FOR_ACCT_VALIDATION,
                 RequestStatus::RETURNED_TO_STAFF,
@@ -63,7 +63,7 @@ class FundRequestPolicy
     public function approve(User $user, FundRequest $fundRequest): bool
     {
         return $user->hasRole('ACCT_HEAD')
-            && $fundRequest->requestor_id !== $user->id
+            && (int) $fundRequest->requestor_id !== (int) $user->id
             && $fundRequest->requestStatus->code === RequestStatus::FOR_HEAD_APPROVAL;
     }
 
@@ -87,7 +87,7 @@ class FundRequestPolicy
 
     public function cancel(User $user, FundRequest $fundRequest): bool
     {
-        return $fundRequest->requestor_id === $user->id
+        return (int) $fundRequest->requestor_id === (int) $user->id
             && in_array($fundRequest->requestStatus->code, [
                 RequestStatus::DRAFT,
                 RequestStatus::RETURNED_TO_REQUESTOR,
@@ -100,7 +100,7 @@ class FundRequestPolicy
      */
     public function liquidate(User $user, FundRequest $fundRequest): bool
     {
-        return $fundRequest->requestor_id === $user->id
+        return (int) $fundRequest->requestor_id === (int) $user->id
             && $fundRequest->fundRequestType->code === \App\Models\FundRequestType::CASH_ADVANCE
             && $fundRequest->requestStatus->code === RequestStatus::COMPLETED
             && ! \App\Models\CashAdvanceLiquidation::where('fund_request_id', $fundRequest->id)->exists();

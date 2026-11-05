@@ -188,13 +188,13 @@ class RevolvingFundExpenseItemController extends Controller
 
     private function assertBelongs(RevolvingFundExpense $expense, RevolvingFundExpenseItem $item): void
     {
-        abort_unless($item->expense_id === $expense->id, 404);
+        abort_unless((int) $item->expense_id === (int) $expense->id, 404);
     }
 
     private function assertOwnsAttachment(RevolvingFundExpenseItem $item, Attachment $attachment): void
     {
         abort_unless(
-            $attachment->attachable_type === $item->getMorphClass() && (int) $attachment->attachable_id === $item->id,
+            $attachment->attachable_type === $item->getMorphClass() && (int) $attachment->attachable_id === (int) $item->id,
             404
         );
     }

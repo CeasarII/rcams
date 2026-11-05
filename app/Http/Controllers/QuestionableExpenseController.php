@@ -208,7 +208,7 @@ class QuestionableExpenseController extends Controller
     private function assertBelongs(QuestionableExpense $qe, Attachment $attachment): void
     {
         abort_unless(
-            $attachment->attachable_type === $qe->getMorphClass() && (int) $attachment->attachable_id === $qe->id,
+            $attachment->attachable_type === $qe->getMorphClass() && (int) $attachment->attachable_id === (int) $qe->id,
             404
         );
     }

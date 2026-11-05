@@ -55,7 +55,7 @@ class LiquidationWorkflowService
         if ($fundRequest->requestStatus->code !== RequestStatus::COMPLETED) {
             throw self::fail('fund_request', 'The cash advance must be disbursed (Completed) before it can be liquidated.');
         }
-        if ($fundRequest->requestor_id !== $actor->id) {
+        if ((int) $fundRequest->requestor_id !== (int) $actor->id) {
             throw self::fail('fund_request', 'Only the Requestor of this cash advance may start its liquidation.');
         }
         if (CashAdvanceLiquidation::where('fund_request_id', $fundRequest->id)->exists()) {
@@ -338,7 +338,7 @@ class LiquidationWorkflowService
         }
         if (! in_array($liq->status->code, [LiquidationStatus::FOR_OE_VALIDATION, LiquidationStatus::FOR_STAFF_VERIFICATION], true)
             || $qe->status->code !== QuestionableExpenseStatus::WAITING_HARD_COPY
-            || $qe->tagged_by !== $actor->id) {
+            || (int) $qe->tagged_by !== (int) $actor->id) {
             throw self::fail('item', 'This tag can no longer be removed.');
         }
 
@@ -401,7 +401,7 @@ class LiquidationWorkflowService
 
     private function assertOwner(CashAdvanceLiquidation $liq, User $actor): void
     {
-        if ($liq->prepared_by !== $actor->id) {
+        if ((int) $liq->prepared_by !== (int) $actor->id) {
             throw self::fail('requestor', 'Only the Requestor who prepared this liquidation may act on it.');
         }
     }

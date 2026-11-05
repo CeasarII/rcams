@@ -20,7 +20,7 @@ class CashAdvanceLiquidationPolicy
      */
     public function update(User $user, CashAdvanceLiquidation $liquidation): bool
     {
-        return $liquidation->prepared_by === $user->id
+        return (int) $liquidation->prepared_by === (int) $user->id
             && $this->in($liquidation, LiquidationStatus::EDITABLE);
     }
 
@@ -28,7 +28,7 @@ class CashAdvanceLiquidationPolicy
     public function validateAsOe(User $user, CashAdvanceLiquidation $liquidation): bool
     {
         return $user->hasRole('OE')
-            && $liquidation->prepared_by !== $user->id // segregation of duties
+            && (int) $liquidation->prepared_by !== (int) $user->id // segregation of duties
             && $this->oeIsInScope($user, $liquidation)
             && $this->in($liquidation, [LiquidationStatus::FOR_OE_VALIDATION]);
     }
@@ -37,14 +37,14 @@ class CashAdvanceLiquidationPolicy
     public function verifyAsStaff(User $user, CashAdvanceLiquidation $liquidation): bool
     {
         return $user->hasRole('ACCT_STAFF')
-            && $liquidation->prepared_by !== $user->id
+            && (int) $liquidation->prepared_by !== (int) $user->id
             && $this->in($liquidation, [LiquidationStatus::FOR_STAFF_VERIFICATION]);
     }
 
     public function prepareApv(User $user, CashAdvanceLiquidation $liquidation): bool
     {
         return $user->hasRole('ACCT_STAFF')
-            && $liquidation->prepared_by !== $user->id
+            && (int) $liquidation->prepared_by !== (int) $user->id
             && $this->in($liquidation, [LiquidationStatus::FOR_APV_PREPARATION]);
     }
 
@@ -52,7 +52,7 @@ class CashAdvanceLiquidationPolicy
     public function reviewApv(User $user, CashAdvanceLiquidation $liquidation): bool
     {
         return $user->hasRole('ACCT_HEAD')
-            && $liquidation->prepared_by !== $user->id
+            && (int) $liquidation->prepared_by !== (int) $user->id
             && $this->in($liquidation, [LiquidationStatus::FOR_APV_REVIEW]);
     }
 
@@ -60,14 +60,14 @@ class CashAdvanceLiquidationPolicy
     public function close(User $user, CashAdvanceLiquidation $liquidation): bool
     {
         return $user->hasRole('ACCT_HEAD')
-            && $liquidation->prepared_by !== $user->id
+            && (int) $liquidation->prepared_by !== (int) $user->id
             && $this->in($liquidation, [LiquidationStatus::FOR_HEAD_CLOSURE]);
     }
 
     public function reimburse(User $user, CashAdvanceLiquidation $liquidation): bool
     {
         return $user->hasRole('TREASURY')
-            && $liquidation->prepared_by !== $user->id
+            && (int) $liquidation->prepared_by !== (int) $user->id
             && $this->in($liquidation, [LiquidationStatus::FOR_REIMBURSEMENT]);
     }
 

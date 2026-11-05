@@ -172,7 +172,7 @@ class RevolvingFundController extends Controller
             return;
         }
 
-        if (Vessel::findOrFail($data['vessel_id'])->company_id !== Department::findOrFail($data['department_id'])->company_id) {
+        if ((int) Vessel::findOrFail($data['vessel_id'])->company_id !== (int) Department::findOrFail($data['department_id'])->company_id) {
             throw ValidationException::withMessages(['vessel_id' => 'The vessel belongs to a different company than the chosen department.']);
         }
     }

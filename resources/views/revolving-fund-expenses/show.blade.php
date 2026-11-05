@@ -127,7 +127,7 @@
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">Tag</button>
                                                 </form>
                                             </details>
-                                        @elseif ($qe && $qe->tagged_by === auth()->id() && $qe->status->code === 'TAGGED')
+                                        @elseif ($qe && (int) $qe->tagged_by === (int) auth()->id() && $qe->status->code === 'TAGGED')
                                             <form method="POST" action="{{ route('revolving-fund-expenses.items.untag', [$expense, $item]) }}"
                                                   class="mt-1" onsubmit="return confirm('Remove the questionable tag?');">
                                                 @csrf @method('DELETE')
