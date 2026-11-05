@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ServesAttachmentPreview;
 use App\Models\Attachment;
 use App\Models\FundRequest;
 use Illuminate\Http\Request;
@@ -20,6 +21,8 @@ use Illuminate\Support\Str;
  */
 class AttachmentController extends Controller
 {
+    use ServesAttachmentPreview;
+
     private const DISK = 'local';
 
     public function store(Request $request, FundRequest $fundRequest)
@@ -64,6 +67,15 @@ class AttachmentController extends Controller
         abort_unless(Storage::disk(self::DISK)->exists($attachment->file_path), 404, 'File not found on storage.');
 
         return Storage::disk(self::DISK)->download($attachment->file_path, $attachment->original_file_name);
+    }
+
+    /** Inline view for the attachment viewer modal. */
+    public function preview(FundRequest $fundRequest, Attachment $attachment)
+    {
+        $this->authorize('view', $fundRequest);
+        $this->assertBelongsTo($fundRequest, $attachment);
+
+        return $this->inlinePreview(self::DISK, $attachment->file_path, $attachment->original_file_name, $attachment->mime_type);
     }
 
     public function destroy(FundRequest $fundRequest, Attachment $attachment)

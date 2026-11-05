@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ServesAttachmentPreview;
 use App\Models\CashAdvanceLiquidation;
 use App\Models\DocumentType;
 use App\Models\LiquidationItem;
@@ -25,6 +26,8 @@ use Illuminate\Validation\Rule;
  */
 class LiquidationItemController extends Controller
 {
+    use ServesAttachmentPreview;
+
     private const DISK = 'local';
 
     public function create(CashAdvanceLiquidation $liquidation)
@@ -107,6 +110,16 @@ class LiquidationItemController extends Controller
         abort_unless(Storage::disk(self::DISK)->exists($attachment->file_path), 404, 'File not found on storage.');
 
         return Storage::disk(self::DISK)->download($attachment->file_path, $attachment->file_name);
+    }
+
+    /** Inline view for the attachment viewer modal. */
+    public function previewAttachment(CashAdvanceLiquidation $liquidation, LiquidationItem $item, LiquidationItemAttachment $attachment)
+    {
+        $this->authorize('view', $liquidation);
+        $this->assertBelongs($liquidation, $item);
+        abort_unless((int) $attachment->liquidation_item_id === (int) $item->id, 404);
+
+        return $this->inlinePreview(self::DISK, $attachment->file_path, $attachment->file_name, $attachment->mime_type);
     }
 
     public function destroyAttachment(CashAdvanceLiquidation $liquidation, LiquidationItem $item, LiquidationItemAttachment $attachment)

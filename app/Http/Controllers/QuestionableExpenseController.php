@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ServesAttachmentPreview;
 use App\Models\Attachment;
 use App\Models\QuestionableExpense;
 use App\Models\QuestionableExpenseStatus;
@@ -16,6 +17,8 @@ use Illuminate\Support\Str;
 
 class QuestionableExpenseController extends Controller
 {
+    use ServesAttachmentPreview;
+
     private const DISK = 'local';
 
     public function __construct(private QuestionableExpenseWorkflowService $workflow)
@@ -192,6 +195,15 @@ class QuestionableExpenseController extends Controller
         abort_unless(Storage::disk(self::DISK)->exists($attachment->file_path), 404, 'File not found on storage.');
 
         return Storage::disk(self::DISK)->download($attachment->file_path, $attachment->original_file_name);
+    }
+
+    /** Inline view for the attachment viewer modal. */
+    public function previewAttachment(QuestionableExpense $questionableExpense, Attachment $attachment)
+    {
+        $this->authorize('view', $questionableExpense);
+        $this->assertBelongs($questionableExpense, $attachment);
+
+        return $this->inlinePreview(self::DISK, $attachment->file_path, $attachment->original_file_name, $attachment->mime_type);
     }
 
     public function destroyAttachment(QuestionableExpense $questionableExpense, Attachment $attachment)

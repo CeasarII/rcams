@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ServesAttachmentPreview;
 use App\Http\Controllers\Concerns\HandlesExpenseItemInput;
 use App\Models\Attachment;
 use App\Models\LiquidationItemStatus;
@@ -26,6 +27,7 @@ use Illuminate\Support\Str;
 class RevolvingFundExpenseItemController extends Controller
 {
     use HandlesExpenseItemInput;
+    use ServesAttachmentPreview;
 
     private const DISK = 'local';
 
@@ -117,6 +119,16 @@ class RevolvingFundExpenseItemController extends Controller
         abort_unless(Storage::disk(self::DISK)->exists($attachment->file_path), 404, 'File not found on storage.');
 
         return Storage::disk(self::DISK)->download($attachment->file_path, $attachment->original_file_name);
+    }
+
+    /** Inline view for the attachment viewer modal. */
+    public function previewAttachment(RevolvingFundExpense $revolvingFundExpense, RevolvingFundExpenseItem $item, Attachment $attachment)
+    {
+        $this->authorize('view', $revolvingFundExpense);
+        $this->assertBelongs($revolvingFundExpense, $item);
+        $this->assertOwnsAttachment($item, $attachment);
+
+        return $this->inlinePreview(self::DISK, $attachment->file_path, $attachment->original_file_name, $attachment->mime_type);
     }
 
     public function destroyAttachment(RevolvingFundExpense $revolvingFundExpense, RevolvingFundExpenseItem $item, Attachment $attachment)

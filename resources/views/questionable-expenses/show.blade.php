@@ -115,7 +115,7 @@
                         @forelse ($qe->attachments as $attachment)
                             <li class="list-group-item small d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a href="{{ route('questionable-expenses.attachments.download', [$qe, $attachment]) }}">{{ $attachment->original_file_name }}</a>
+                                    <x-attachment-link :href="route('questionable-expenses.attachments.download', [$qe, $attachment])" :preview="route('questionable-expenses.attachments.preview', [$qe, $attachment])" :name="$attachment->original_file_name" :mime="$attachment->mime_type" />
                                     <span class="text-muted">&middot; {{ $attachment->uploader->full_name }} &middot; {{ $attachment->uploaded_at->format('Y-m-d') }}</span>
                                 </div>
                                 @can('secureProof', $qe)

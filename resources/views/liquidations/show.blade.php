@@ -84,7 +84,7 @@
                                     @endif
                                     @foreach ($item->attachments as $attachment)
                                         <div class="text-truncate" style="max-width: 17rem;">
-                                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1 text-muted"><path d="M21 12.5l-8.5 8.5a5 5 0 0 1-7-7L14 5.5a3.5 3.5 0 0 1 5 5L10.5 19a2 2 0 0 1-3-3L15 8.5"/></svg><a href="{{ route('liquidations.items.attachments.download', [$liquidation, $item, $attachment]) }}" title="{{ $attachment->file_name }}">{{ $attachment->file_name }}</a> <span class="text-muted">({{ $attachment->documentType->label }})</span>
+                                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1 text-muted"><path d="M21 12.5l-8.5 8.5a5 5 0 0 1-7-7L14 5.5a3.5 3.5 0 0 1 5 5L10.5 19a2 2 0 0 1-3-3L15 8.5"/></svg><x-attachment-link :href="route('liquidations.items.attachments.download', [$liquidation, $item, $attachment])" :preview="route('liquidations.items.attachments.preview', [$liquidation, $item, $attachment])" :name="$attachment->file_name" :mime="$attachment->mime_type" /> <span class="text-muted">({{ $attachment->documentType->label }})</span>
                                         </div>
                                     @endforeach
                                 </td>
