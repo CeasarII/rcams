@@ -115,7 +115,7 @@
                 @foreach ($item->attachments as $attachment)
                     <li class="list-group-item small d-flex justify-content-between align-items-center">
                         <div>
-                            <x-attachment-link :href="route('revolving-fund-expenses.items.attachments.download', [$expense, $item, $attachment])" :preview="route('revolving-fund-expenses.items.attachments.preview', [$expense, $item, $attachment])" :name="$attachment->original_file_name" :mime="$attachment->mime_type" />
+                            <a href="{{ route('revolving-fund-expenses.items.attachments.download', [$expense, $item, $attachment]) }}">{{ $attachment->original_file_name }}</a>
                             <span class="text-muted">&middot; {{ $attachment->humanSize() }}</span>
                         </div>
                         <form method="POST" action="{{ route('revolving-fund-expenses.items.attachments.destroy', [$expense, $item, $attachment]) }}"

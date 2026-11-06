@@ -6,7 +6,7 @@ use Closure;
 
 /**
  * The "View" dropdown shared by the list pages: queues waiting on the user's
- * role(s), a combined "Needs my action", then general views. The default view is "All".
+ * role(s), a combined "Needs my action" (default), then general views.
  * Each filter is ['label' => string, 'apply' => fn (Builder $q) => void].
  */
 final class QueueFilters
@@ -33,14 +33,9 @@ final class QueueFilters
         return $filters + $general;
     }
 
-    /** The chosen view, or "All" when none is chosen (or the choice isn't one of this user's views). */
-    public static function resolve(array $filters, mixed $requested, string $default = 'all'): string
+    public static function resolve(array $filters, mixed $requested): string
     {
-        if (is_string($requested) && isset($filters[$requested])) {
-            return $requested;
-        }
-
-        return isset($filters[$default]) ? $default : array_key_first($filters);
+        return is_string($requested) && isset($filters[$requested]) ? $requested : array_key_first($filters);
     }
 
     /** @param  Closure  $freshQuery  returns a new, already access-scoped query each call */

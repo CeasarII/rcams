@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Concerns\ServesAttachmentPreview;
 use App\Http\Controllers\Concerns\HandlesExpenseItemInput;
 use App\Models\Attachment;
 use App\Models\LiquidationItemStatus;
@@ -27,7 +26,6 @@ use Illuminate\Support\Str;
 class RevolvingFundExpenseItemController extends Controller
 {
     use HandlesExpenseItemInput;
-    use ServesAttachmentPreview;
 
     private const DISK = 'local';
 
@@ -121,16 +119,6 @@ class RevolvingFundExpenseItemController extends Controller
         return Storage::disk(self::DISK)->download($attachment->file_path, $attachment->original_file_name);
     }
 
-    /** Inline view for the attachment viewer modal. */
-    public function previewAttachment(RevolvingFundExpense $revolvingFundExpense, RevolvingFundExpenseItem $item, Attachment $attachment)
-    {
-        $this->authorize('view', $revolvingFundExpense);
-        $this->assertBelongs($revolvingFundExpense, $item);
-        $this->assertOwnsAttachment($item, $attachment);
-
-        return $this->inlinePreview(self::DISK, $attachment->file_path, $attachment->original_file_name, $attachment->mime_type);
-    }
-
     public function destroyAttachment(RevolvingFundExpense $revolvingFundExpense, RevolvingFundExpenseItem $item, Attachment $attachment)
     {
         $this->authorize('update', $revolvingFundExpense);
@@ -200,13 +188,13 @@ class RevolvingFundExpenseItemController extends Controller
 
     private function assertBelongs(RevolvingFundExpense $expense, RevolvingFundExpenseItem $item): void
     {
-        abort_unless((int) $item->expense_id === (int) $expense->id, 404);
+        abort_unless($item->expense_id === $expense->id, 404);
     }
 
     private function assertOwnsAttachment(RevolvingFundExpenseItem $item, Attachment $attachment): void
     {
         abort_unless(
-            $attachment->attachable_type === $item->getMorphClass() && (int) $attachment->attachable_id === (int) $item->id,
+            $attachment->attachable_type === $item->getMorphClass() && (int) $attachment->attachable_id === $item->id,
             404
         );
     }

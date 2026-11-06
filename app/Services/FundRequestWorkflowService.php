@@ -306,7 +306,7 @@ class FundRequestWorkflowService
 
     private function assertOwner(FundRequest $fundRequest, User $actor): void
     {
-        if ((int) $fundRequest->requestor_id !== (int) $actor->id) {
+        if ($fundRequest->requestor_id !== $actor->id) {
             throw ValidationException::withMessages([
                 'requestor' => 'Only the original Requestor may act on this request.',
             ]);

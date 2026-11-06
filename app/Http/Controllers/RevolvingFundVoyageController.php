@@ -41,7 +41,7 @@ class RevolvingFundVoyageController extends Controller
     public function end(Request $request, RevolvingFund $revolvingFund, RevolvingFundVoyage $voyage)
     {
         $this->authorize('manageVoyage', $revolvingFund);
-        abort_unless((int) $voyage->revolving_fund_id === (int) $revolvingFund->id, 404);
+        abort_unless($voyage->revolving_fund_id === $revolvingFund->id, 404);
 
         if (! $voyage->isOpen()) {
             throw ValidationException::withMessages(['end_date' => 'This voyage is already closed.']);

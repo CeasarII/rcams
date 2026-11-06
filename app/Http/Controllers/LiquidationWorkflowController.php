@@ -141,7 +141,7 @@ class LiquidationWorkflowController extends Controller
     public function tag(Request $request, CashAdvanceLiquidation $liquidation, LiquidationItem $item)
     {
         $this->authorize('tagQuestionable', $liquidation);
-        abort_unless((int) $item->liquidation_id === (int) $liquidation->id, 404);
+        abort_unless($item->liquidation_id === $liquidation->id, 404);
 
         $data = $request->validate(['reason' => ['required', 'string', 'max:1000']]);
 
@@ -153,7 +153,7 @@ class LiquidationWorkflowController extends Controller
     public function untag(CashAdvanceLiquidation $liquidation, LiquidationItem $item)
     {
         $this->authorize('tagQuestionable', $liquidation);
-        abort_unless((int) $item->liquidation_id === (int) $liquidation->id, 404);
+        abort_unless($item->liquidation_id === $liquidation->id, 404);
 
         $this->workflow->untagQuestionable($item, Auth::user());
 

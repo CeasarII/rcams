@@ -16,13 +16,13 @@ class RevolvingFundExpensePolicy
 {
     public function view(User $user, RevolvingFundExpense $expense): bool
     {
-        return LiquidationAccess::seesAll(LiquidationAccess::roles($user)) || (int) $expense->prepared_by === (int) $user->id;
+        return LiquidationAccess::seesAll(LiquidationAccess::roles($user)) || $expense->prepared_by === $user->id;
     }
 
     /** Submit, and revise as the Requestor — Draft or sent back to them. */
     public function submit(User $user, RevolvingFundExpense $expense): bool
     {
-        return (int) $expense->prepared_by === (int) $user->id && $this->in($expense, S::REQUESTOR_EDITABLE);
+        return $expense->prepared_by === $user->id && $this->in($expense, S::REQUESTOR_EDITABLE);
     }
 
     /**
@@ -91,7 +91,7 @@ class RevolvingFundExpensePolicy
 
     private function role(User $user, RevolvingFundExpense $expense, string $code): bool
     {
-        return $user->hasRole($code) && (int) $expense->prepared_by !== (int) $user->id;
+        return $user->hasRole($code) && $expense->prepared_by !== $user->id;
     }
 
     private function oe(User $user, RevolvingFundExpense $expense): bool

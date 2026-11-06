@@ -247,7 +247,7 @@
                         @forelse ($fundRequest->attachments as $attachment)
                             <li class="list-group-item small d-flex justify-content-between align-items-start gap-2">
                                 <div>
-                                    <x-attachment-link :href="route('fund-requests.attachments.download', [$fundRequest, $attachment])" :preview="route('fund-requests.attachments.preview', [$fundRequest, $attachment])" :name="$attachment->original_file_name" :mime="$attachment->mime_type" />
+                                    <a href="{{ route('fund-requests.attachments.download', [$fundRequest, $attachment]) }}">{{ $attachment->original_file_name }}</a>
                                     <div class="text-muted">
                                         {{ $attachment->humanSize() }} · {{ $attachment->uploader->full_name }} · {{ $attachment->uploaded_at->format('M d, Y') }}
                                     </div>

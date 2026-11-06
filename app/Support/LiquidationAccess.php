@@ -62,7 +62,7 @@ final class LiquidationAccess
         if (self::seesAll($roles)) {
             return true;
         }
-        if (in_array('REQUESTOR', $roles, true) && (int) $liquidation->prepared_by === (int) $user->id) {
+        if (in_array('REQUESTOR', $roles, true) && $liquidation->prepared_by === $user->id) {
             return true;
         }
 

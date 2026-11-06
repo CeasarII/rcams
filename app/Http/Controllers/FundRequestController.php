@@ -21,7 +21,7 @@ class FundRequestController extends Controller
     /**
      * One list for every role, narrowed by a "View" dropdown. The dropdown
      * options depend on the user's roles: each role contributes the queue(s)
-     * waiting on it, "Needs my action" combines them,
+     * waiting on it, "Needs my action" combines them (and is the default),
      * and everyone also gets the general views (in progress / completed / all).
      *
      * Visibility mirrors FundRequestPolicy::view(): a user whose only role is
@@ -35,8 +35,10 @@ class FundRequestController extends Controller
 
         $filters = $this->filtersFor($user, $has);
 
-        $requested = $request->query('filter');
-        $key = is_string($requested) && isset($filters[$requested]) ? $requested : 'all'; // default view: All
+        $key = $request->query('filter');
+        if (! isset($filters[$key])) {
+            $key = array_key_first($filters);
+        }
 
         $visible = function () use ($user, $has) {
             $q = FundRequest::query();

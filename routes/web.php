@@ -56,8 +56,6 @@ Route::middleware('auth')->group(function () {
         ->name('fund-requests.attachments.store');
     Route::get('fund-requests/{fund_request}/attachments/{attachment}', [AttachmentController::class, 'download'])
         ->name('fund-requests.attachments.download');
-    Route::get('fund-requests/{fund_request}/attachments/{attachment}/preview', [AttachmentController::class, 'preview'])
-        ->name('fund-requests.attachments.preview');
     Route::delete('fund-requests/{fund_request}/attachments/{attachment}', [AttachmentController::class, 'destroy'])
         ->name('fund-requests.attachments.destroy');
 
@@ -79,7 +77,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('items/{item}', [LiquidationItemController::class, 'destroy'])->name('items.destroy');
         Route::post('items/{item}/attachments', [LiquidationItemController::class, 'storeAttachments'])->name('items.attachments.store');
         Route::get('items/{item}/attachments/{attachment}', [LiquidationItemController::class, 'downloadAttachment'])->name('items.attachments.download');
-        Route::get('items/{item}/attachments/{attachment}/preview', [LiquidationItemController::class, 'previewAttachment'])->name('items.attachments.preview');
         Route::delete('items/{item}/attachments/{attachment}', [LiquidationItemController::class, 'destroyAttachment'])->name('items.attachments.destroy');
 
         // Tag an item as a Questionable Expense (OE "Liquidation okay?" / Staff "Verification okay?")
@@ -112,7 +109,6 @@ Route::middleware('auth')->group(function () {
         Route::post('close', [QuestionableExpenseController::class, 'close'])->name('close');
         Route::post('attachments', [QuestionableExpenseController::class, 'storeAttachments'])->name('attachments.store');
         Route::get('attachments/{attachment}', [QuestionableExpenseController::class, 'downloadAttachment'])->name('attachments.download');
-        Route::get('attachments/{attachment}/preview', [QuestionableExpenseController::class, 'previewAttachment'])->name('attachments.preview');
         Route::delete('attachments/{attachment}', [QuestionableExpenseController::class, 'destroyAttachment'])->name('attachments.destroy');
     });
 
@@ -142,7 +138,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('items/{item}', [RevolvingFundExpenseItemController::class, 'destroy'])->name('items.destroy');
         Route::post('items/{item}/attachments', [RevolvingFundExpenseItemController::class, 'storeAttachments'])->name('items.attachments.store');
         Route::get('items/{item}/attachments/{attachment}', [RevolvingFundExpenseItemController::class, 'downloadAttachment'])->name('items.attachments.download');
-        Route::get('items/{item}/attachments/{attachment}/preview', [RevolvingFundExpenseItemController::class, 'previewAttachment'])->name('items.attachments.preview');
         Route::delete('items/{item}/attachments/{attachment}', [RevolvingFundExpenseItemController::class, 'destroyAttachment'])->name('items.attachments.destroy');
 
         Route::post('items/{item}/tag-questionable', [RevolvingFundExpenseWorkflowController::class, 'tag'])->name('items.tag');
