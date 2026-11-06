@@ -363,3 +363,27 @@ dd { font-size: 0.88rem; }
     .app-shell.sidebar-open .sidebar-link span.label { display: block; }
     .sidebar-expand-toggle { display: flex !important; }
 }
+
+/* ---------- Collapsed sidebar (desktop) ----------------------
+   Keep the header row the same height whether the sidebar is open or
+   closed, hide the "CAMS" title so it can't be cut off, and put the
+   expand button in the header row (in place of the logo mark) instead
+   of letting it drop below. */
+@media (min-width: 861px) {
+    .sidebar { position: relative; }
+
+    .sidebar-brand { min-height: 60px; box-sizing: border-box; }
+
+    .app-shell.sidebar-collapsed .sidebar-brand .label,
+    .app-shell.sidebar-collapsed .sidebar-brand .mark {
+        display: none;
+    }
+
+    .app-shell.sidebar-collapsed .sidebar-expand-toggle {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+    }
+}

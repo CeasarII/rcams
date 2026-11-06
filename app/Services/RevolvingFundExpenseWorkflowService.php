@@ -52,7 +52,7 @@ class RevolvingFundExpenseWorkflowService
         $voyage->loadMissing('revolvingFund.status', 'status');
         $fund = $voyage->revolvingFund;
 
-        if ($fund->custodian_id !== $actor->id) {
+        if ((int) $fund->custodian_id !== (int) $actor->id) {
             throw self::fail('fund', 'Only the custodian of this revolving fund can prepare its voyage expenses.');
         }
         if (! $fund->isActive()) {
@@ -354,7 +354,7 @@ class RevolvingFundExpenseWorkflowService
 
         if (! in_array($expense->status->code, $taggingStage, true)
             || $qe->status->code !== QuestionableExpenseStatus::TAGGED
-            || $qe->tagged_by !== $actor->id) {
+            || (int) $qe->tagged_by !== (int) $actor->id) {
             throw self::fail('item', 'This tag can no longer be removed.');
         }
 
@@ -430,7 +430,7 @@ class RevolvingFundExpenseWorkflowService
 
     private function assertOwner(RevolvingFundExpense $expense, User $actor): void
     {
-        if ($expense->prepared_by !== $actor->id) {
+        if ((int) $expense->prepared_by !== (int) $actor->id) {
             throw self::fail('requestor', 'Only the Requestor who prepared these expenses may act on them.');
         }
     }
