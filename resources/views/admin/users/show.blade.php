@@ -3,7 +3,7 @@
 @section('title', $user->full_name)
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-start mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
         <div>
             <h1 class="h3 mb-1">{{ $user->full_name }}</h1>
             @if ($user->is_active)

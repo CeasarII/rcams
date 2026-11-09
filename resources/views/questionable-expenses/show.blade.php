@@ -24,7 +24,7 @@
         ];
     @endphp
 
-    <div class="d-flex justify-content-between align-items-start mb-3">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
         <div>
             <h1 class="h3 mb-1">{{ $qe->control_no }}</h1>
             <x-status-badge :status="$qe->status" class="fs-6" />
@@ -144,7 +144,7 @@
 
             <div class="card">
                 <div class="card-header">History</div>
-                <table class="table mb-0 small">
+                <div class="table-responsive"><table class="table mb-0 small">
                     <thead><tr><th>When</th><th>Role</th><th>By</th><th>Action</th><th>Remarks</th></tr></thead>
                     <tbody>
                     @foreach ($qe->events as $event)
@@ -157,7 +157,7 @@
                         </tr>
                     @endforeach
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
 

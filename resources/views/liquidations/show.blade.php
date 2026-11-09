@@ -9,7 +9,7 @@
         $validItems = $items->filter(fn ($i) => $i->status->code === 'EXPENSE');
     @endphp
 
-    <div class="d-flex justify-content-between align-items-start mb-3">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
         <div>
             <h1 class="h3 mb-1">{{ $liquidation->control_no }}</h1>
             <x-status-badge :status="$liquidation->status" class="fs-6" />
@@ -56,7 +56,7 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <span>Expense Breakdown</span>
                     @can('update', $liquidation)
                         <a href="{{ route('liquidations.items.create', $liquidation) }}" class="btn btn-sm btn-primary">Add Item</a>

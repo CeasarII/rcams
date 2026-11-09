@@ -3,7 +3,7 @@
 @section('title', $fund->fund_code)
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-start mb-3">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
         <div>
             <h1 class="h3 mb-1">{{ $fund->fund_code }} &mdash; {{ $fund->fund_name }}</h1>
             <x-status-badge :status="$fund->status" class="fs-6" />
@@ -17,7 +17,7 @@
         <div class="col-lg-8">
 
             <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <span>Voyages</span>
                     @if ($openVoyage)
                         @can('manageVoyage', $fund)

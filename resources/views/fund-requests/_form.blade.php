@@ -93,7 +93,7 @@
 <hr class="my-4">
 
 <h2 class="h5">Detail Lines</h2>
-<table class="table" id="detail-lines">
+<div class="table-responsive"><table class="table" id="detail-lines">
     <thead>
     <tr>
         <th>Purpose</th>
@@ -112,7 +112,7 @@
         </tr>
     @endforeach
     </tbody>
-</table>
+</table></div>
 
 <button type="button" id="add-line" class="btn btn-sm btn-outline-secondary">+ Add line</button>
 

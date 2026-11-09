@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>@yield('title', 'Cash Advance Monitoring System')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
 <body>
 <div class="app-shell" id="app-shell">
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="app-sidebar">
         <div class="sidebar-brand">
             <span class="mark">CA</span>
             <span class="label">CAMS</span>
@@ -44,9 +44,11 @@
         @endauth
     </aside>
 
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
     <div class="app-main">
         <header class="topbar">
-            <button type="button" class="sidebar-expand-toggle d-md-none" id="sidebar-mobile-btn" aria-label="Open menu" style="display:flex;">
+            <button type="button" class="topbar-menu-btn" id="sidebar-mobile-btn" aria-label="Open menu" aria-controls="app-sidebar" aria-expanded="false">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
             <span class="topbar-title">@yield('title', 'Cash Advance Monitoring System')</span>
@@ -84,35 +86,60 @@
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
     const expandBtn = document.getElementById('sidebar-expand-btn');
     const mobileBtn = document.getElementById('sidebar-mobile-btn');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    const sidebar = document.getElementById('app-sidebar');
     const STORAGE_KEY = 'cams-sidebar-collapsed';
+    const mobileQuery = window.matchMedia('(max-width: 860px)');
 
-    if (localStorage.getItem(STORAGE_KEY) === '1') {
-        shell.classList.add('sidebar-collapsed');
+    function setMenu(open) {
+        shell.classList.toggle('sidebar-open', open);
+        document.body.classList.toggle('menu-open', open);
+        mobileBtn?.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
 
+    try {
+        if (localStorage.getItem(STORAGE_KEY) === '1') {
+            shell.classList.add('sidebar-collapsed');
+        }
+    } catch (e) { /* storage blocked: just start expanded */ }
+
+    function remember(value) {
+        try { localStorage.setItem(STORAGE_KEY, value); } catch (e) {}
+    }
+
+    // On desktop this button collapses the sidebar to icons; on a phone the
+    // sidebar is an overlay, so the same button simply closes it.
     collapseBtn?.addEventListener('click', function () {
+        if (mobileQuery.matches) {
+            setMenu(false);
+            return;
+        }
         shell.classList.add('sidebar-collapsed');
-        localStorage.setItem(STORAGE_KEY, '1');
+        remember('1');
     });
 
     expandBtn?.addEventListener('click', function () {
         shell.classList.remove('sidebar-collapsed');
-        localStorage.setItem(STORAGE_KEY, '0');
+        remember('0');
     });
 
-    // Mobile: sidebar is an off-canvas overlay, toggled independently of
-    // the desktop collapsed/expanded state.
     mobileBtn?.addEventListener('click', function () {
-        shell.classList.toggle('sidebar-open');
+        setMenu(! shell.classList.contains('sidebar-open'));
     });
 
-    document.addEventListener('click', function (e) {
-        if (shell.classList.contains('sidebar-open')
-            && !e.target.closest('.sidebar')
-            && !e.target.closest('#sidebar-mobile-btn')) {
-            shell.classList.remove('sidebar-open');
-        }
+    backdrop?.addEventListener('click', function () { setMenu(false); });
+
+    // Tapping a menu link, or pressing Escape, closes the overlay.
+    sidebar?.addEventListener('click', function (e) {
+        if (mobileQuery.matches && e.target.closest('a')) setMenu(false);
     });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && shell.classList.contains('sidebar-open')) setMenu(false);
+    });
+
+    // Growing the window past the breakpoint (e.g. rotating a tablet) must not
+    // leave the page scroll-locked.
+    mobileQuery.addEventListener('change', function () { setMenu(false); });
 })();
 </script>
 </body>

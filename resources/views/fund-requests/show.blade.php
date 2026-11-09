@@ -3,7 +3,7 @@
 @section('title', $fundRequest->control_no)
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-start mb-3">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
         <div>
             <h1 class="h3 mb-1">{{ $fundRequest->control_no }}</h1>
             <x-status-badge :status="$fundRequest->requestStatus" class="fs-6" />
@@ -52,7 +52,7 @@
 
             <div class="card mb-4">
                 <div class="card-header">Detail Lines</div>
-                <table class="table mb-0">
+                <div class="table-responsive"><table class="table mb-0">
                     <thead><tr><th>Purpose</th><th>Description</th><th class="text-end">Amount</th></tr></thead>
                     <tbody>
                     @foreach ($fundRequest->details as $detail)
@@ -69,7 +69,7 @@
                         <th class="text-end">{{ number_format($fundRequest->amount_requested, 2) }}</th>
                     </tr>
                     </tfoot>
-                </table>
+                </table></div>
             </div>
 
             @if ($fundRequest->apVoucher)
@@ -122,7 +122,7 @@
 
             <div class="card">
                 <div class="card-header">Workflow History</div>
-                <table class="table mb-0">
+                <div class="table-responsive"><table class="table mb-0">
                     <thead><tr><th>When</th><th>Role</th><th>By</th><th>Action</th><th>From</th><th>To</th><th>Comments</th></tr></thead>
                     <tbody>
                     @forelse ($fundRequest->approvals as $entry)
@@ -139,7 +139,7 @@
                         <tr><td colspan="7" class="text-center text-muted py-3">No activity yet.</td></tr>
                     @endforelse
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
 

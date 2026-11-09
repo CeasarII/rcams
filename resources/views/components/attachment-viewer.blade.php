@@ -1,6 +1,6 @@
 {{-- One viewer for every attachment link on every page (see <x-attachment-link>). --}}
 <div class="modal fade" id="attachmentViewer" tabindex="-1" aria-labelledby="attachmentViewerTitle" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 {{-- The title takes the free space so Download and Close sit together on the right
@@ -12,7 +12,7 @@
                 </a>
                 <button type="button" class="btn-close ms-3 flex-shrink-0" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-0 bg-light" style="height: 75vh;" data-viewer-body></div>
+            <div class="modal-body p-0 bg-light attachment-viewer-body" data-viewer-body></div>
         </div>
     </div>
 </div>

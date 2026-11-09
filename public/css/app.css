@@ -347,21 +347,74 @@ dd { font-size: 0.88rem; }
     font-size: 0.88rem;
 }
 
-/* ---------- Responsive: sidebar becomes an overlay ---------- */
+/* ---------- Responsive: sidebar becomes an overlay ----------
+   At 860px and below the sidebar leaves the layout and slides in over the
+   page (opened from the burger in the top bar). It ignores the desktop
+   "collapsed" setting, which only makes sense on a wide screen. */
+
+.topbar-menu-btn {
+    display: none;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    width: 40px;
+    height: 40px;
+    margin: -0.3rem 0.5rem -0.3rem -0.4rem;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.topbar-menu-btn:hover { background: var(--bg-sidebar-hover); }
+
+.sidebar-backdrop { display: none; }
 
 @media (max-width: 860px) {
-    .sidebar {
+    .topbar-menu-btn { display: flex; }
+
+    .sidebar,
+    .app-shell.sidebar-collapsed .sidebar {
         position: fixed;
         inset: 0 auto 0 0;
-        z-index: 20;
+        z-index: 1040;
+        width: min(var(--sidebar-w), 86vw);
+        height: 100vh;
+        height: 100dvh;
+        padding-top: env(safe-area-inset-top);
         transform: translateX(-100%);
-        box-shadow: 0 0 0 100vw rgba(0,0,0,0.15);
+        visibility: hidden; /* keeps the hidden links out of the tab order */
+        transition: transform 0.2s ease, visibility 0s linear 0.2s;
     }
-    .app-shell.sidebar-collapsed .sidebar { width: var(--sidebar-w); transform: translateX(-100%); }
-    .app-shell.sidebar-open .sidebar { transform: translateX(0); }
-    .app-shell.sidebar-open .sidebar .sidebar-group-label,
-    .app-shell.sidebar-open .sidebar-link span.label { display: block; }
-    .sidebar-expand-toggle { display: flex !important; }
+    .app-shell.sidebar-open .sidebar {
+        transform: translateX(0);
+        visibility: visible;
+        transition-delay: 0s;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1030;
+        background: rgba(20, 18, 15, 0.35);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
+    .app-shell.sidebar-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+    body.menu-open { overflow: hidden; }
+
+    /* Always show the full menu in the overlay, whatever the saved desktop state. */
+    .app-shell.sidebar-collapsed .sidebar-toggle { display: flex; }
+    .app-shell.sidebar-collapsed .sidebar-expand-toggle { display: none; }
+    .app-shell.sidebar-collapsed .sidebar-group-label { display: block; }
+    .app-shell.sidebar-collapsed .sidebar-link span.label { display: inline; }
+    .app-shell.sidebar-collapsed .sidebar-link { justify-content: flex-start; }
+
+    /* Bigger tap targets. */
+    .sidebar-link { padding: 0.65rem 0.75rem; }
+    .sidebar-toggle { width: 36px; height: 36px; }
 }
 
 /* ---------- Collapsed sidebar (desktop) ----------------------
@@ -370,7 +423,13 @@ dd { font-size: 0.88rem; }
    expand button in the header row (in place of the logo mark) instead
    of letting it drop below. */
 @media (min-width: 861px) {
-    .sidebar { position: relative; }
+    .sidebar {
+        position: sticky;
+        top: 0;
+        align-self: flex-start;
+        height: 100vh;
+        height: 100dvh;
+    }
 
     .sidebar-brand { min-height: 60px; box-sizing: border-box; }
 
@@ -386,4 +445,86 @@ dd { font-size: 0.88rem; }
         transform: translateX(-50%);
         margin: 0;
     }
+}
+
+
+/* ---------- Page chrome: top bar, headers, long text -------- */
+
+.topbar-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.topbar-user {
+    display: block;
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 45%;
+    margin-left: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.page-header { flex-wrap: wrap; gap: 0.75rem; }
+.page-header > div { min-width: 0; }
+
+.content-area { min-width: 0; overflow-wrap: anywhere; }
+.pagination { flex-wrap: wrap; }
+
+/* Detail-lines editor: let the inputs keep a usable width and scroll sideways instead of crushing. */
+#detail-lines { min-width: 36rem; }
+
+/* Attachment viewer: tall on desktop, full screen on phones. */
+.attachment-viewer-body { height: 75vh; height: 75dvh; }
+
+/* ---------- Tablets and below (<= 767px) -------------------- */
+
+@media (max-width: 767.98px) {
+    /* Wide tables (5+ columns) scroll sideways inside their card rather than squeezing every column. */
+    .table-responsive > .table:has(th:nth-child(5)) { min-width: 40rem; }
+
+    .attachment-viewer-body { height: auto; flex: 1 1 auto; }
+
+    /* Filter / search bars: full-width controls instead of cramped inline ones. */
+    form.row > .col-auto { width: 100%; }
+}
+
+/* ---------- Phones (<= 575px) ------------------------------- */
+
+@media (max-width: 575.98px) {
+    .topbar {
+        padding: 0.6rem 1rem;
+        padding-top: calc(0.6rem + env(safe-area-inset-top));
+        padding-left: calc(1rem + env(safe-area-inset-left));
+        padding-right: calc(1rem + env(safe-area-inset-right));
+    }
+    .topbar-user { max-width: 38%; font-size: 0.8rem; }
+
+    .content-area {
+        padding: 1rem;
+        padding-left: calc(1rem + env(safe-area-inset-left));
+        padding-right: calc(1rem + env(safe-area-inset-right));
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    }
+
+    .page-title { font-size: 1.15rem; }
+    .page-header > .btn { width: 100%; }
+
+    .card-header { padding: 0.75rem 0.9rem; }
+    .card-body { padding: 0.9rem; }
+
+    /* 16px inputs stop iOS from zooming the page when a field is focused. */
+    .form-control, .form-select { font-size: 16px; min-height: 42px; }
+    .btn { padding: 0.55rem 1rem; }
+    .btn-sm { padding: 0.4rem 0.7rem; }
+
+    h1.h3 { font-size: 1.35rem; }
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+    .sidebar, .sidebar-backdrop { transition: none !important; }
 }
