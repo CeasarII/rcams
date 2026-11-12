@@ -95,6 +95,17 @@
 <x-attachment-viewer />
 
 <script>
+// Scrolling the page with the mouse wheel must never change a number field. Browsers change the
+// value of a focused number input on wheel, so drop its focus as soon as the wheel turns over it.
+document.addEventListener('wheel', function (e) {
+    const t = e.target;
+    if (t instanceof HTMLInputElement && t.type === 'number' && t === document.activeElement) {
+        t.blur();
+    }
+}, { passive: true });
+</script>
+
+<script>
 (function () {
     const shell = document.getElementById('app-shell');
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
