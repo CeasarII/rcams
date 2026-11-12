@@ -18,15 +18,15 @@ class SendNotificationEmail implements ShouldQueue
 {
     use Queueable;
 
-    /** Queued mode: wait until the surrounding database transaction has committed. */
-    public bool $afterCommit = true;
-
     public int $tries = 3;
 
     public int $backoff = 60;
 
     public function __construct(public int $notificationId)
     {
+        // Queued mode: wait until the surrounding database transaction has committed.
+        // (Set here, not as a property: the Queueable trait already declares $afterCommit.)
+        $this->afterCommit();
     }
 
     public function handle(): void

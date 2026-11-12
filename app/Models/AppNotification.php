@@ -39,9 +39,10 @@ class AppNotification extends Model
                 return;
             }
 
-            config('cams.email_use_queue')
+            // Email trouble must never break the workflow action that created the notification.
+            rescue(fn () => config('cams.email_use_queue')
                 ? SendNotificationEmail::dispatch($notification->id)
-                : SendNotificationEmail::dispatchAfterResponse($notification->id);
+                : SendNotificationEmail::dispatchAfterResponse($notification->id));
         });
     }
 
