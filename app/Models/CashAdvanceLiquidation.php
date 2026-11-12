@@ -52,6 +52,12 @@ class CashAdvanceLiquidation extends Model
         return $this->hasMany(LiquidationApproval::class, 'liquidation_id')->orderBy('approval_date')->orderBy('id');
     }
 
+    /** Treasury's supporting documents (e.g. proof of payment) added at the disbursement step. */
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     public function voucher()
     {
         return $this->hasOne(LiquidationVoucher::class, 'liquidation_id');

@@ -40,7 +40,15 @@
                                 <td>{{ $voyage->start_date->format('Y-m-d') }}</td>
                                 <td>{{ $voyage->end_date?->format('Y-m-d') ?? '—' }}</td>
                                 <td class="text-end">{{ number_format($voyage->beginning_balance, 2) }}</td>
-                                <td class="text-end">{{ $voyage->ending_balance !== null ? number_format($voyage->ending_balance, 2) : '—' }}</td>
+                                <td class="text-end">
+                                    @if ($voyage->isOpen())
+                                        {{-- Open voyage: no ending balance yet, so show the fund's balance as it stands now. --}}
+                                        {{ number_format($fund->current_balance, 2) }}
+                                        <span class="badge text-bg-light border fw-normal" title="Live balance. The ending balance is fixed when the voyage is closed.">live</span>
+                                    @else
+                                        {{ $voyage->ending_balance !== null ? number_format($voyage->ending_balance, 2) : '—' }}
+                                    @endif
+                                </td>
                                 <td><x-status-badge :status="$voyage->status" /></td>
                                 <td class="text-end">
                                     @if ($voyage->isOpen())

@@ -11,11 +11,14 @@ use App\Http\Controllers\FundRequestController;
 use App\Http\Controllers\FundRequestWorkflowController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\NatureOfCostController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\LiquidationAttachmentController;
 use App\Http\Controllers\LiquidationController;
 use App\Http\Controllers\LiquidationItemController;
 use App\Http\Controllers\LiquidationWorkflowController;
 use App\Http\Controllers\QuestionableExpenseController;
 use App\Http\Controllers\RevolvingFundController;
+use App\Http\Controllers\RevolvingFundExpenseAttachmentController;
 use App\Http\Controllers\RevolvingFundExpenseController;
 use App\Http\Controllers\RevolvingFundExpenseItemController;
 use App\Http\Controllers\RevolvingFundExpenseWorkflowController;
@@ -32,6 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/', fn () => redirect()->route('fund-requests.index'));
+
+    // Notifications (the bell and the full page)
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/feed', [NotificationController::class, 'feed'])->name('notifications.feed');
+    Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::get('notifications/{notification}/open', [NotificationController::class, 'open'])->name('notifications.open');
 
     // Fund requests (Process A)
     Route::resource('fund-requests', FundRequestController::class)
@@ -70,6 +79,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [LiquidationController::class, 'show'])->name('show');
         Route::get('edit', [LiquidationController::class, 'edit'])->name('edit');
         Route::put('/', [LiquidationController::class, 'update'])->name('update');
+
+        // Treasury's supporting documents at the disbursement step
+        Route::post('attachments', [LiquidationAttachmentController::class, 'store'])->name('attachments.store');
+        Route::get('attachments/{attachment}', [LiquidationAttachmentController::class, 'download'])->name('attachments.download');
+        Route::get('attachments/{attachment}/preview', [LiquidationAttachmentController::class, 'preview'])->name('attachments.preview');
+        Route::delete('attachments/{attachment}', [LiquidationAttachmentController::class, 'destroy'])->name('attachments.destroy');
 
         // Expense breakdown (items) and their supporting documents
         Route::get('items/create', [LiquidationItemController::class, 'create'])->name('items.create');
@@ -134,6 +149,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [RevolvingFundExpenseController::class, 'show'])->name('show');
         Route::get('edit', [RevolvingFundExpenseController::class, 'edit'])->name('edit');
         Route::put('/', [RevolvingFundExpenseController::class, 'update'])->name('update');
+
+        // Treasury's supporting documents at the disbursement step
+        Route::post('attachments', [RevolvingFundExpenseAttachmentController::class, 'store'])->name('attachments.store');
+        Route::get('attachments/{attachment}', [RevolvingFundExpenseAttachmentController::class, 'download'])->name('attachments.download');
+        Route::get('attachments/{attachment}/preview', [RevolvingFundExpenseAttachmentController::class, 'preview'])->name('attachments.preview');
+        Route::delete('attachments/{attachment}', [RevolvingFundExpenseAttachmentController::class, 'destroy'])->name('attachments.destroy');
 
         Route::get('items/create', [RevolvingFundExpenseItemController::class, 'create'])->name('items.create');
         Route::post('items', [RevolvingFundExpenseItemController::class, 'store'])->name('items.store');

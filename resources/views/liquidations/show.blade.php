@@ -337,6 +337,8 @@
                     @endcanany
                 </div>
             </div>
+
+            <x-record-attachments :record="$liquidation" prefix="liquidations.attachments" />
         </div>
     </div>
 @endsection

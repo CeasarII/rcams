@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Attachment;
 use App\Models\RevolvingFundExpense;
 use App\Models\RevolvingFundExpenseStatus as S;
 use App\Models\User;
@@ -81,6 +82,19 @@ class RevolvingFundExpensePolicy
     public function disburse(User $user, RevolvingFundExpense $expense): bool
     {
         return $this->role($user, $expense, 'TREASURY') && $this->in($expense, [S::FOR_DISBURSEMENT]);
+    }
+
+    /** Treasury adds supporting documents (e.g. proof of payment) at the disbursement step. */
+    public function attachDisbursement(User $user, RevolvingFundExpense $expense): bool
+    {
+        return $this->disburse($user, $expense);
+    }
+
+    /** Treasury may remove only the files they uploaded, and only at that step. */
+    public function removeAttachment(User $user, RevolvingFundExpense $expense, Attachment $attachment): bool
+    {
+        return $this->attachDisbursement($user, $expense)
+            && (int) $attachment->uploaded_by === (int) $user->id;
     }
 
     /** Flag items as questionable: the OE at step 2, Accounting Staff at step 3. */

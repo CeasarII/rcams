@@ -51,9 +51,19 @@ class RevolvingFundVoyageController extends Controller
             'end_date' => ['required', 'date', 'after_or_equal:'.$voyage->start_date->toDateString(), 'before_or_equal:today'],
         ]);
 
-        $unfinished = $voyage->expenses()->whereHas('status', fn ($q) => $q->whereIn('code', RevolvingFundExpenseStatus::REQUESTOR_EDITABLE))->exists();
-        if ($unfinished) {
-            throw ValidationException::withMessages(['end_date' => 'Submit or finish the draft voyage expenses before closing the voyage.']);
+        // The ending balance is a snapshot of the fund, and an expense only moves the fund when the
+        // Head approves it (and again at disbursement). So every voyage expense must be Completed
+        // first, otherwise it would post to the fund after the ending balance was already frozen.
+        $unfinished = $voyage->expenses()
+            ->whereHas('status', fn ($q) => $q->where('code', '!=', RevolvingFundExpenseStatus::COMPLETED))
+            ->with('status')
+            ->get();
+        if ($unfinished->isNotEmpty()) {
+            $list = $unfinished->map(fn ($e) => "{$e->control_no} ({$e->status->label})")->implode(', ');
+
+            throw ValidationException::withMessages([
+                'end_date' => "Complete all voyage expenses before closing the voyage. Still in progress: {$list}.",
+            ]);
         }
 
         $voyage->update([

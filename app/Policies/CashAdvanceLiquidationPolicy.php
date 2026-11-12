@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Attachment;
 use App\Models\CashAdvanceLiquidation;
 use App\Models\LiquidationStatus;
 use App\Models\User;
@@ -69,6 +70,22 @@ class CashAdvanceLiquidationPolicy
         return $user->hasRole('TREASURY')
             && (int) $liquidation->prepared_by !== (int) $user->id
             && $this->in($liquidation, [LiquidationStatus::FOR_REIMBURSEMENT]);
+    }
+
+    /**
+     * Treasury adds supporting documents (e.g. proof of payment) at the
+     * reimbursement step — a liquidation's equivalent of "For Disbursement".
+     */
+    public function attachDisbursement(User $user, CashAdvanceLiquidation $liquidation): bool
+    {
+        return $this->reimburse($user, $liquidation);
+    }
+
+    /** Treasury may remove only the files they uploaded, and only at that step. */
+    public function removeAttachment(User $user, CashAdvanceLiquidation $liquidation, Attachment $attachment): bool
+    {
+        return $this->attachDisbursement($user, $liquidation)
+            && (int) $attachment->uploaded_by === (int) $user->id;
     }
 
     /** Tag/untag items as Questionable — at the OE's and Staff's "okay?" decisions. */

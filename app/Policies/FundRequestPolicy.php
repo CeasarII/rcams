@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Attachment;
 use App\Models\FundRequest;
 use App\Models\RequestStatus;
 use App\Models\User;
@@ -106,10 +107,31 @@ class FundRequestPolicy
             && ! \App\Models\CashAdvanceLiquidation::where('fund_request_id', $fundRequest->id)->exists();
     }
 
-    /** Upload/remove supporting documents — same window as editing the request. */
+    /**
+     * Upload supporting documents: the Requestor while the request is editable,
+     * and Treasury while it is For Disbursement (e.g. proof of payment).
+     */
     public function attach(User $user, FundRequest $fundRequest): bool
     {
-        return $this->update($user, $fundRequest);
+        return $this->update($user, $fundRequest) || $this->attachDisbursement($user, $fundRequest);
+    }
+
+    /** Treasury adds documents at the disbursement step. */
+    public function attachDisbursement(User $user, FundRequest $fundRequest): bool
+    {
+        return $user->hasRole('TREASURY')
+            && $fundRequest->requestStatus->code === RequestStatus::FOR_DISBURSEMENT;
+    }
+
+    /**
+     * Remove a file: the Requestor in the editable window; Treasury only the
+     * files they uploaded themselves, and only while it is For Disbursement.
+     */
+    public function removeAttachment(User $user, FundRequest $fundRequest, Attachment $attachment): bool
+    {
+        return $this->update($user, $fundRequest)
+            || ($this->attachDisbursement($user, $fundRequest)
+                && (int) $attachment->uploaded_by === (int) $user->id);
     }
 
     /**

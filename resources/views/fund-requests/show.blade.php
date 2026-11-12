@@ -252,7 +252,7 @@
                                         {{ $attachment->humanSize() }} · {{ $attachment->uploader->full_name }} · {{ $attachment->uploaded_at->format('M d, Y') }}
                                     </div>
                                 </div>
-                                @can('attach', $fundRequest)
+                                @can('removeAttachment', [$fundRequest, $attachment])
                                     <form method="POST" action="{{ route('fund-requests.attachments.destroy', [$fundRequest, $attachment]) }}"
                                           onsubmit="return confirm('Remove this attachment?');" class="mb-0">
                                         @csrf

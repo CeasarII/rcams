@@ -18,6 +18,10 @@
 
     <div class="card">
         <div class="card-body p-4">
+            @if (session('status'))
+                <div class="alert alert-success py-2 small">{{ session('status') }}</div>
+            @endif
+
             @if ($errors->any())
                 <div class="alert alert-danger py-2">
                     <ul class="mb-0 small">

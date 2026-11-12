@@ -28,20 +28,6 @@
         @auth
             <x-sidebar-nav />
         @endauth
-
-        @auth
-            <div class="sidebar-footer">
-                <form method="POST" action="{{ route('logout') }}" class="mb-0">
-                    @csrf
-                    <button type="submit" class="sidebar-link w-100 border-0 bg-transparent text-start">
-                        <span class="icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-                        </span>
-                        <span class="label">Log Out</span>
-                    </button>
-                </form>
-            </div>
-        @endauth
     </aside>
 
     <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
@@ -53,7 +39,35 @@
             </button>
             <span class="topbar-title">@yield('title', 'Cash Advance Monitoring System')</span>
             @auth
-                <span class="topbar-user">{{ auth()->user()->full_name }}</span>
+                <x-notification-bell />
+                @php
+                    $me = auth()->user();
+                    $initials = \Illuminate\Support\Str::upper(
+                        collect(preg_split('/\s+/', trim($me->full_name)))->filter()->take(2)
+                            ->map(fn ($part) => mb_substr($part, 0, 1))->implode('')
+                    );
+                @endphp
+                <div class="dropdown user-menu">
+                    <button type="button" class="user-menu-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Account menu">
+                        <span class="user-avatar">{{ $initials }}</span>
+                        <span class="user-name">{{ $me->full_name }}</span>
+                        <svg class="user-caret" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end user-menu-panel">
+                        <div class="user-menu-header">
+                            <div class="fw-semibold">{{ $me->full_name }}</div>
+                            <div class="small text-muted text-break">{{ $me->email }}</div>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <form method="POST" action="{{ route('logout') }}" class="mb-0">
+                            @csrf
+                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 user-signout">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                                Sign out
+                            </button>
+                        </form>
+                    </div>
+                </div>
             @endauth
         </header>
 

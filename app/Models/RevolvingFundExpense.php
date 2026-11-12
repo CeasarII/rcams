@@ -50,6 +50,12 @@ class RevolvingFundExpense extends Model
         return $this->hasMany(RevolvingFundExpenseApproval::class, 'expense_id')->orderBy('approval_date')->orderBy('id');
     }
 
+    /** Treasury's supporting documents (e.g. proof of payment) added at the disbursement step. */
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     public function voucher()
     {
         return $this->hasOne(RevolvingFundVoucher::class, 'expense_id');

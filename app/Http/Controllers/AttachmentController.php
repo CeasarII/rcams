@@ -15,9 +15,9 @@ use Illuminate\Support\Str;
  * disk (storage/app/private) — never public — and are only served through
  * download(), which re-checks that the user may view the request.
  *
- * Upload/remove follows the same window as editing the request itself
- * (FundRequestPolicy::attach): Requestor only, while Draft or Returned to
- * Requestor. After submission the document set is frozen with the record.
+ * Upload follows FundRequestPolicy::attach: the Requestor while Draft or
+ * Returned to Requestor, and Treasury while For Disbursement. In between, the
+ * document set is frozen with the record. Treasury can remove only its own files.
  */
 class AttachmentController extends Controller
 {
@@ -80,8 +80,8 @@ class AttachmentController extends Controller
 
     public function destroy(FundRequest $fundRequest, Attachment $attachment)
     {
-        $this->authorize('attach', $fundRequest);
         $this->assertBelongsTo($fundRequest, $attachment);
+        $this->authorize('removeAttachment', [$fundRequest, $attachment]);
 
         Storage::disk(self::DISK)->delete($attachment->file_path);
         $attachment->delete();

@@ -328,6 +328,8 @@
                     @endcanany
                 </div>
             </div>
+
+            <x-record-attachments :record="$expense" prefix="revolving-fund-expenses.attachments" />
         </div>
     </div>
 @endsection
