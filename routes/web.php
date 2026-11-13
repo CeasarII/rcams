@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\EmailTestController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VesselController;
 use App\Http\Controllers\Admin\VesselTypeController;
@@ -187,6 +188,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', UserController::class)->except(['destroy']);
         Route::post('users/{user}/toggle-active', [UserController::class, 'toggleActive'])
             ->name('users.toggle-active');
+
+        // Send one test email to check the SMTP settings
+        Route::get('email-test', [EmailTestController::class, 'index'])->name('email-test.index');
+        Route::post('email-test', [EmailTestController::class, 'send'])->middleware('throttle:6,1')->name('email-test.send');
 
         // Master data maintenance — no delete; retire via the Active flag
         Route::resource('companies', CompanyController::class)->except(['show', 'destroy']);

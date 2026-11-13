@@ -90,6 +90,14 @@
                 </span>
                 <span class="label">Users</span>
             </a>
+
+            <a href="{{ route('admin.email-test.index') }}"
+               class="sidebar-link {{ $isActive('admin.email-test.*') ? 'active' : '' }}">
+                <span class="icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                </span>
+                <span class="label">Email Test</span>
+            </a>
         </div>
 
         <div class="sidebar-group">
