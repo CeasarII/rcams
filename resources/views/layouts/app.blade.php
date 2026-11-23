@@ -94,6 +94,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <x-attachment-viewer />
 
+<x-loading-overlay />
+
 <script>
 // Scrolling the page with the mouse wheel must never change a number field. Browsers change the
 // value of a focused number input on wheel, so drop its focus as soon as the wheel turns over it.
